@@ -24,6 +24,7 @@ function answerready_ai_default_options() {
         'enable_ai_checks' => 1,
         'enable_human_signal_checks' => 1,
         'minimum_recommended_score' => 75,
+        'enable_ai_review' => 1,
         'openai_api_key' => '',
         'openai_model' => 'gpt-4o-mini'
     );
@@ -118,6 +119,18 @@ function answerready_ai_register_settings() {
     );
 
     add_settings_field(
+        'enable_ai_review',
+        'Enable AI Review',
+        'answerready_ai_checkbox_field_callback',
+        'answerready-ai',
+        'answerready_ai_openai_section',
+        array(
+            'key' => 'enable_ai_review',
+            'label' => 'Allow editors to run API-powered AI Review from the post editor.'
+        )
+    );
+
+    add_settings_field(
         'openai_api_key',
         'OpenAI API key',
         'answerready_ai_password_field_callback',
@@ -163,6 +176,8 @@ function answerready_ai_sanitize_options($input) {
     }
 
     $output['minimum_recommended_score'] = $minimum_score;
+
+    $output['enable_ai_review'] = isset($input['enable_ai_review']) ? 1 : 0;
 
     $output['openai_api_key'] = isset($input['openai_api_key'])
         ? sanitize_text_field($input['openai_api_key'])
@@ -356,6 +371,7 @@ function answerready_ai_enqueue_editor_assets() {
             'enableAiChecks' => (bool) $options['enable_ai_checks'],
             'enableHumanSignalChecks' => (bool) $options['enable_human_signal_checks'],
             'minimumRecommendedScore' => absint($options['minimum_recommended_score']),
+            'enableAiReview' => !empty($options['enable_ai_review']),
             'hasOpenAiKey' => !empty($options['openai_api_key']),
             'openAiModel' => sanitize_text_field($options['openai_model']),
             'restUrl' => esc_url_raw(rest_url('answerready-ai/v1/review')),
@@ -407,6 +423,15 @@ add_action('rest_api_init', 'answerready_ai_register_rest_routes');
  */
 function answerready_ai_run_ai_review($request) {
     $options = answerready_ai_get_options();
+
+    if (empty($options['enable_ai_review'])) {
+        return new WP_Error(
+            'answerready_ai_review_disabled',
+            'AI Review is disabled in AnswerReady AI settings.',
+            array('status' => 403)
+        );
+    }
+
     $api_key = isset($options['openai_api_key']) ? trim($options['openai_api_key']) : '';
     $model = isset($options['openai_model']) && $options['openai_model'] !== ''
         ? sanitize_text_field($options['openai_model'])

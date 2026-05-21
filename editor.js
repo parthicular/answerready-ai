@@ -18,6 +18,7 @@
 
     const minimumRecommendedScore = Number(pluginSettings.minimumRecommendedScore || 75);
     const hasAnyEnabledSection = enabledSections.seo || enabledSections.ai || enabledSections.human;
+    const enableAiReview = settingIsEnabled(pluginSettings.enableAiReview);
 
     const AI_REVIEW_CONFIRM_MESSAGE =
         "Run AI Review? This sends the current draft to OpenAI using your saved API key and may incur API cost.";
@@ -1284,6 +1285,10 @@ const failedChecksCount = allChecks.filter((check) => !check.passed).length;
         }, [contentHash]);
 
         function runAiReviewApi() {
+            if (!enableAiReview) {
+                return;
+            }
+
             setAiReviewLoading(true);
             setAiReviewError("");
             setAiReview(null);
@@ -1340,6 +1345,10 @@ const failedChecksCount = allChecks.filter((check) => !check.passed).length;
         }
 
         function confirmAndRunAiReview() {
+            if (!enableAiReview) {
+                return;
+            }
+
             if (!window.confirm(AI_REVIEW_CONFIRM_MESSAGE)) {
                 return;
             }
@@ -1349,6 +1358,10 @@ const failedChecksCount = allChecks.filter((check) => !check.passed).length;
         }
 
         function handleRunAiReviewClick() {
+            if (!enableAiReview) {
+                return;
+            }
+
             if (!pluginSettings.hasOpenAiKey || !pluginSettings.restUrl) {
                 setAiReviewError("Add your OpenAI API key under Settings → AnswerReady AI.");
                 return;
@@ -1436,9 +1449,16 @@ const failedChecksCount = allChecks.filter((check) => !check.passed).length;
                 el(
                     "div",
                     { className: "answerready-ai-review-actions" },
-                    el("span", { className: costLabel.className }, costLabel.text),
-
-                    cachedReview &&
+                    !enableAiReview &&
+                        el(
+                            "div",
+                            { className: "answerready-disabled-warning" },
+                            "AI Review is disabled in AnswerReady AI settings. Rule-based checks are still available."
+                        ),
+                    enableAiReview &&
+                        el("span", { className: costLabel.className }, costLabel.text),
+                    enableAiReview &&
+                        cachedReview &&
                         el(
                             "div",
                             { className: "answerready-ai-cache-meta" },
@@ -1456,15 +1476,15 @@ const failedChecksCount = allChecks.filter((check) => !check.passed).length;
                                     "Current draft has changed since that review."
                                 )
                         ),
-
-                    isContentChanged &&
+                    enableAiReview &&
+                        isContentChanged &&
                         el(
                             "div",
                             { className: "answerready-ai-cache-notice answerready-ai-cache-notice-changed" },
                             "This draft has changed since the last AI review. A fresh review may be useful."
                         ),
-
-                    showUnchangedPrompt &&
+                    enableAiReview &&
+                        showUnchangedPrompt &&
                         el(
                             "div",
                             { className: "answerready-ai-cache-notice answerready-ai-cache-notice-unchanged" },
@@ -1494,24 +1514,26 @@ const failedChecksCount = allChecks.filter((check) => !check.passed).length;
                                 )
                             )
                         ),
-
-                    el(
-                        "button",
-                        {
-                            type: "button",
-                            className: "button button-primary",
-                            onClick: handleRunAiReviewClick,
-                            disabled: aiReviewLoading || !pluginSettings.hasOpenAiKey
-                        },
-                        aiReviewLoading ? "Running AI Review..." : "Run AI Review"
-                    ),
-                    !pluginSettings.hasOpenAiKey &&
+                    enableAiReview &&
+                        el(
+                            "button",
+                            {
+                                type: "button",
+                                className: "button button-primary",
+                                onClick: handleRunAiReviewClick,
+                                disabled: aiReviewLoading || !pluginSettings.hasOpenAiKey
+                            },
+                            aiReviewLoading ? "Running AI Review..." : "Run AI Review"
+                        ),
+                    enableAiReview &&
+                        !pluginSettings.hasOpenAiKey &&
                         el(
                             "p",
                             { className: "answerready-ai-error" },
                             "Add your OpenAI API key under Settings → AnswerReady AI."
                         ),
-                    aiReviewError &&
+                    enableAiReview &&
+                        aiReviewError &&
                         el(
                             "p",
                             { className: "answerready-ai-error" },
@@ -1519,7 +1541,7 @@ const failedChecksCount = allChecks.filter((check) => !check.passed).length;
                         )
                 ),
 
-                el(AiReviewPanel, { review: aiReview }),
+                enableAiReview && el(AiReviewPanel, { review: aiReview }),
 
                 el(
                     "div",

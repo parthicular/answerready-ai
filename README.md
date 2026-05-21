@@ -24,7 +24,7 @@ When an OpenAI API key is configured, editors can optionally run **AI Review** f
 - Collapsible checklist sections
 - Configurable settings (enable/disable sections, minimum recommended score)
 - Minimum recommended score setting
-- OpenAI-powered AI Review
+- OpenAI-powered AI Review (can be disabled in settings)
 - API cost safeguards (confirmation, content-hash cache, reuse saved reviews)
 - Cached AI reviews in browser localStorage
 - Copy / insert AI suggestions into the draft
@@ -64,10 +64,13 @@ Go to **Settings → AnswerReady AI**:
 | Enable AI Readiness checks | Show or hide the AI Readiness checklist and score |
 | Enable Human Signal checks | Show or hide the Human Signal checklist and score |
 | Minimum recommended score | Publishing-readiness benchmark (default: 75) |
-| OpenAI API key | Required for AI Review (server-side only) |
+| Enable AI Review | Turn API-powered AI Review on or off in the editor (default: on) |
+| OpenAI API key | Required for AI Review when enabled (server-side only) |
 | AI model | OpenAI model ID for AI Review (default: `gpt-4o-mini`) |
 
-Rule-based checks work without an API key.
+**Rule-based checks work without an API key.** You do not need OpenAI configured to use scores, top fixes, or collapsible checklists.
+
+**Beta testing tip:** Site owners can **disable AI Review** in settings to prevent editors and testers from using the site’s API key. Testers who need AI Review should use **their own OpenAI API key** on a site they control.
 
 ## Using the editor sidebar
 
@@ -75,12 +78,13 @@ Rule-based checks work without an API key.
 2. Open the **AnswerReady AI** document sidebar panel.
 3. Review scores, the recommendation, and **Top fixes**.
 4. Expand checklist cards to see individual checks.
-5. Optionally run **AI Review** if an API key is saved.
+5. Optionally run **AI Review** if it is enabled in settings and an API key is saved.
 
 ## Using AI Review
 
-- **Rule-based checks** run automatically as you edit.
-- **AI Review** is optional and uses your saved OpenAI API key.
+- **Rule-based checks** run automatically as you edit—no API key required.
+- **AI Review** is optional. It must be **enabled** under **Settings → AnswerReady AI** and requires a saved OpenAI API key.
+- Site owners can **disable AI Review** during beta testing to avoid accidental API usage on a shared install.
 - AI Review sends the current draft **title**, **excerpt**, and **content** to OpenAI through your WordPress site’s REST API.
 - **Cost safeguards** include a confirmation prompt, content-hash caching, and options to reuse a saved review when the draft has not changed.
 - Suggestions can be **copied** or **inserted** as new blocks (TL;DR, FAQ, Why this matters).

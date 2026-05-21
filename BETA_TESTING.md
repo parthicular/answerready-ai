@@ -25,6 +25,13 @@ Focus on:
 
 Use [TEST_LOG_TEMPLATE.md](TEST_LOG_TEMPLATE.md) to record results.
 
+## Cost-safe testing
+
+- **Rule-based beta tests need no API key.** You can complete the full checklist, scoring, top fixes, and collapsible UI tests without configuring OpenAI.
+- **AI Review is optional** and may incur **OpenAI API costs** on the account tied to the saved key.
+- **Site owners:** If you do not want testers using your API key, go to **Settings → AnswerReady AI** and **uncheck Enable AI Review**. Rule-based checks remain available in the editor.
+- **Testers:** For AI Review scenarios, use a **local or staging site with your own API key**, not a production site owner’s key unless you have explicit permission.
+
 ## Installation steps
 
 1. Copy the `answerready-ai` folder into `wp-content/plugins/`.
@@ -82,19 +89,20 @@ For each, note whether **SEO**, **AI Readiness**, and **Human Signal** scores al
 
 13. **Toggle checklist sections** — disable SEO only, then AI only, then Human; confirm cards and overall score update.
 14. **Disable all checklist sections** — confirm warning appears; overall score behavior remains understandable.
+15. **Disable AI Review** — uncheck **Enable AI Review** in settings; confirm editor shows disabled message, no Run button, and rule-based checks still work.
 
 ### AI Review and API
 
-15. **Missing OpenAI API key** — Run AI Review disabled or shows settings guidance; no key in browser devtools localized settings.
-16. **Invalid API key** — Save a deliberately wrong key; run AI Review; expect clear error, no silent failure.
-17. **AI Review cancelled before API call** — Dismiss confirmation dialog; no API charge; no partial review state.
-18. **AI Review run twice on unchanged draft** — Second run should offer cached review / “unchanged” flow, not immediate duplicate API call (unless “run again anyway”).
-19. **AI Review run after content changes** — Edit title or body; expect “draft changed” notice; fresh review allowed after confirm.
+16. **Missing OpenAI API key** — With AI Review enabled, Run AI Review disabled or shows settings guidance; no key in browser devtools localized settings.
+17. **Invalid API key** — Save a deliberately wrong key; run AI Review; expect clear error, no silent failure.
+18. **AI Review cancelled before API call** — Dismiss confirmation dialog; no API charge; no partial review state.
+19. **AI Review run twice on unchanged draft** — Second run should offer cached review / “unchanged” flow, not immediate duplicate API call (unless “run again anyway”).
+20. **AI Review run after content changes** — Edit title or body; expect “draft changed” notice; fresh review allowed after confirm.
 
 ### Copy and insert
 
-20. **Copy AI suggestions** — TL;DR, FAQs, Why this matters, full review; clipboard and button feedback.
-21. **Insert AI suggestions** — Insert TL;DR, FAQs, Why this matters; new blocks only, existing content untouched.
+21. **Copy AI suggestions** — TL;DR, FAQs, Why this matters, full review; clipboard and button feedback.
+22. **Insert AI suggestions** — Insert TL;DR, FAQs, Why this matters; new blocks only, existing content untouched.
 
 ## What feedback to report
 
