@@ -89,8 +89,6 @@ Do not use AI Review on confidential drafts unless your organization allows send
 
 ## Screenshots
 
-Add images to the `screenshots/` folder when available:
-
 ![Score overview](screenshots/screenshot-1-score-overview.png)
 
 ![AI editorial review](screenshots/screenshot-2-ai-review.png)
