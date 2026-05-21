@@ -1,0 +1,36 @@
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local env/config
+.env
+.env.local
+
+# Dependency folders if added later
+node_modules/
+vendor/
+
+# Build/cache folders if added later
+dist/
+build/
+.cache/
+
+# WordPress generated files that should not be committed
+*.zip
+
+# Sensitive files
+*secret*
+*secrets*
+*api-key*
+*apikey*
+*.pem
+*.key
